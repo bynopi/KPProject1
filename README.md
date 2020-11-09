@@ -1,3 +1,5 @@
 # KPProject1
 Vid Player Mobile Android Ver.
-Link apk : https://drive.google.com/file/d/1wG6O2cty1sYkRff2-TnibbTU1fPLv9sX/view?usp=sharing
+Example : 
+- landscape ver. https://drive.google.com/file/d/13uOrLQWKp0RvzltLQcohCeXThIFzWk16/view?usp=sharing
+- potrait ver. https://drive.google.com/file/d/13zhePV1KUF8Aav7rufGan8FIaR4NLSPn/view?usp=sharing

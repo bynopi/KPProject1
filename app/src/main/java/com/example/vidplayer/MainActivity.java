@@ -5,10 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -52,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //Video url
-        //Suara Pengharapan
+        //Suara Pengharapan (Landscape)
         Uri videourl = Uri.parse("https://storage.googleapis.com/gloria_assets_id/suara_pengharapan/suaraPengharapan20201015.mp4");
-        //amazing grace
-        //Uri videourl = Uri.parse("https://storage.googleapis.com/gloria_assets_id/amazing_grace/amazingGrace20201013.mp4");
+        //amazing grace (Potrait)
+       //Uri videourl = Uri.parse("https://storage.googleapis.com/gloria_assets_id/amazing_grace/amazingGrace20201013.mp4");
         //load
         LoadControl loadControl = new DefaultLoadControl();
         //meter
@@ -143,21 +146,64 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (flag) {
-                    //true=fullscreen
+                    //FOR LANDSCAPE VIDEO
                     btFullscreen.setImageDrawable(getResources().
                             getDrawable(R.drawable.ic_fullscreen));
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                    //false
+                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                    if (getSupportActionBar() != null){
+                        getSupportActionBar().show();
+                    }
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)playerView.getLayoutParams();
+                    params.width = params.MATCH_PARENT;
+                    playerView.setLayoutParams(params);
                     flag = false;
+
+                    //FOR POTRAIT VIDEO
+                    /*btFullscreen.setImageDrawable(getResources().
+                            getDrawable(R.drawable.ic_fullscreen));
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                    if (getSupportActionBar() != null){
+                        getSupportActionBar().show();
+                    }
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)playerView.getLayoutParams();
+                    params.width = params.MATCH_PARENT;
+                    playerView.setLayoutParams(params);
+                    flag = false;*/
+
                 } else {
-                    //false=exitfullscreen
+                    //FOR LANDSCAPE VIDEO
                     btFullscreen.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_exit));
+                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+                    if (getSupportActionBar() != null){
+                        getSupportActionBar().hide();
+                    }
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                    //true
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)playerView.getLayoutParams();
+                    params.width = params.MATCH_PARENT;
+                    playerView.setLayoutParams(params);
                     flag = true;
+
+                    //FOR POTRAIT VIDEO
+                    /*btFullscreen.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_exit));
+                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+                    if (getSupportActionBar() != null){
+                        getSupportActionBar().hide();
+                    }
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)playerView.getLayoutParams();
+                    params.width = params.MATCH_PARENT;
+                    playerView.setLayoutParams(params);
+                    flag = true;*/
                 }
             }
         });
+
     }
     @Override
     protected void onPause(){

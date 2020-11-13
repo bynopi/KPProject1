@@ -3,13 +3,12 @@ package com.example.vidplayer;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.pm.ActivityInfo;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
@@ -35,6 +34,8 @@ import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
     PlayerView playerView;
     ProgressBar progressBar;
@@ -58,7 +59,93 @@ public class MainActivity extends AppCompatActivity {
         //Suara Pengharapan (Landscape)
         Uri videourl = Uri.parse("https://storage.googleapis.com/gloria_assets_id/suara_pengharapan/suaraPengharapan20201015.mp4");
         //amazing grace (Potrait)
-       //Uri videourl = Uri.parse("https://storage.googleapis.com/gloria_assets_id/amazing_grace/amazingGrace20201013.mp4");
+        //Uri videourl = Uri.parse("https://storage.googleapis.com/gloria_assets_id/amazing_grace/amazingGrace20201013.mp4");
+        //detect orient video and fullscreen mode
+        MediaPlayer mp = new MediaPlayer();
+        try {
+            mp.setDataSource(String.valueOf(videourl));
+            mp.prepare();
+            mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+                @Override
+                public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+                    if(width < height){
+                        btFullscreen.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (flag) {
+                                    btFullscreen.setImageDrawable(getResources().
+                                            getDrawable(R.drawable.ic_fullscreen));
+                                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                                    if (getSupportActionBar() != null) {
+                                        getSupportActionBar().show();
+                                    }
+                                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) playerView.getLayoutParams();
+                                    params.width = params.MATCH_PARENT;
+                                    playerView.setLayoutParams(params);
+                                    flag = false;
+                                }
+                                else{
+                                    btFullscreen.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_exit));
+                                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
+                                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+                                    if (getSupportActionBar() != null){
+                                        getSupportActionBar().hide();
+                                    }
+                                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)playerView.getLayoutParams();
+                                    params.width = params.MATCH_PARENT;
+                                    playerView.setLayoutParams(params);
+                                    flag = true;
+                                }
+                            }
+                        });
+                    }else {
+                        btFullscreen.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (flag) {
+                                    btFullscreen.setImageDrawable(getResources().
+                                            getDrawable(R.drawable.ic_fullscreen));
+                                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                                    if (getSupportActionBar() != null){
+                                        getSupportActionBar().show();
+                                    }
+                                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)playerView.getLayoutParams();
+                                    params.width = params.MATCH_PARENT;
+                                    playerView.setLayoutParams(params);
+                                    flag = false;
+                                }
+                                else{
+                                    btFullscreen.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_exit));
+                                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
+                                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+                                    if (getSupportActionBar() != null){
+                                        getSupportActionBar().hide();
+                                    }
+                                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)playerView.getLayoutParams();
+                                    params.width = params.MATCH_PARENT;
+                                    playerView.setLayoutParams(params);
+                                    flag = true;
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //load
         LoadControl loadControl = new DefaultLoadControl();
         //meter
@@ -87,6 +174,8 @@ public class MainActivity extends AppCompatActivity {
         simpleExoPlayer.prepare(mediaSource);
         //playvideo
         simpleExoPlayer.setPlayWhenReady(true);
+
+
         simpleExoPlayer.addListener(new Player.EventListener() {
             @Override
             public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
@@ -141,70 +230,10 @@ public class MainActivity extends AppCompatActivity {
             public void onSeekProcessed() {
 
             }
+
         });
-        btFullscreen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (flag) {
-                    //FOR LANDSCAPE VIDEO
-                    btFullscreen.setImageDrawable(getResources().
-                            getDrawable(R.drawable.ic_fullscreen));
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-                    if (getSupportActionBar() != null){
-                        getSupportActionBar().show();
-                    }
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)playerView.getLayoutParams();
-                    params.width = params.MATCH_PARENT;
-                    playerView.setLayoutParams(params);
-                    flag = false;
-
-                    //FOR POTRAIT VIDEO
-                    /*btFullscreen.setImageDrawable(getResources().
-                            getDrawable(R.drawable.ic_fullscreen));
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-                    if (getSupportActionBar() != null){
-                        getSupportActionBar().show();
-                    }
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)playerView.getLayoutParams();
-                    params.width = params.MATCH_PARENT;
-                    playerView.setLayoutParams(params);
-                    flag = false;*/
-
-                } else {
-                    //FOR LANDSCAPE VIDEO
-                    btFullscreen.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_exit));
-                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-                    if (getSupportActionBar() != null){
-                        getSupportActionBar().hide();
-                    }
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)playerView.getLayoutParams();
-                    params.width = params.MATCH_PARENT;
-                    playerView.setLayoutParams(params);
-                    flag = true;
-
-                    //FOR POTRAIT VIDEO
-                    /*btFullscreen.setImageDrawable(getResources().getDrawable(R.drawable.ic_fullscreen_exit));
-                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-                    if (getSupportActionBar() != null){
-                        getSupportActionBar().hide();
-                    }
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)playerView.getLayoutParams();
-                    params.width = params.MATCH_PARENT;
-                    playerView.setLayoutParams(params);
-                    flag = true;*/
-                }
-            }
-        });
-
     }
+
     @Override
     protected void onPause(){
         super.onPause();
